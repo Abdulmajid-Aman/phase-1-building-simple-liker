@@ -23,3 +23,38 @@ function mimicServerCall(url="http://mimicServer.example.com", config={}) {
     }, 300);
   });
 }
+
+
+let likeHearts = document.querySelectorAll('.like-glyph')
+
+likeHearts.forEach(likeHeart => likeHeart.addEventListener('click', (event) => {
+  mimicServerCall().then(() => {
+    if(likeHeart.textContent === EMPTY_HEART) {
+      likeHeart.textContent = FULL_HEART;
+      likeHeart.classList.add('activated-heart');
+    } else {
+      likeHeart.textContent = EMPTY_HEART;
+      likeHeart.classList.remove('activated-heart');
+    }
+  })
+  .catch((error) => {
+    // Toggle the heart back to its original state
+    if(likeHeart.textContent === FULL_HEART) {
+      likeHeart.textContent = EMPTY_HEART;
+      likeHeart.classList.remove('activated-heart');
+    } else {
+      likeHeart.textContent = FULL_HEART;
+      likeHeart.classList.add('activated-heart');
+    }
+    
+    // Display error modal
+    const modal = document.getElementById('modal');
+    const modalMessage = document.getElementById('modal-message');
+    modalMessage.textContent = error;
+    modal.classList.remove('hidden');
+    
+    // Hide error modal after 3 seconds
+    setTimeout(() => {
+      modal.classList.add('hidden');
+    }, 3000);
+  },)}))
